@@ -9,7 +9,7 @@ class Player(object):
         self.isAI = isai
         self.score = 0
         self.hand = [0,0,0,0,0,0,0,0,0,0,0,0,0] #each index is a card, 1 through 13
-        self.isAI = False
+
     name = ''
     def makeBid(self, card):
         if card > 12:
@@ -37,8 +37,8 @@ def makeAIMove(player):
     if player.isAI:
         moves = []
         #make a valid move
-        for card in player.hand:
-            if card == 0:
+        for card in range(13):
+            if player.hand[card] == 0:
                 moves.append(card)
         #choose a move
         return random.choice(moves)
@@ -51,6 +51,7 @@ NUMPLAYERS = 2
 Game = []
 for num in range(0,NUMPLAYERS):
     Game.append(Player('Player ' + str(num + 1), False))
+Game[1].isAI = True
 Moves = []
 for num in range(0, NUMPLAYERS):
     Moves.append(-1)
@@ -69,7 +70,10 @@ for card in scoreCards:
             if player.hand[cardNum] == 0:
                 print(cardNum + 1)
         if not player.isAI: move = input('select a card: ') - 1 #for simplicity, haha
-        #else: move = makeAIMove(player)
+        else: 
+            move = makeAIMove(player)
+            print('\nAI move is: ')
+            print(move+1)
         while player.makeBid(move) == -1:
             print('bad selection')
             move = input('select a card: ')-1#for simplicity, haha
@@ -77,7 +81,8 @@ for card in scoreCards:
         Moves[playerNum] = move
         playerNum += 1
         playerNum %= NUMPLAYERS
-    print(max(Moves))
+    print('\nWinning Bid: ')
+    print(max(Moves)+1)
     Game[Moves.index(max(Moves))].winCard(card)
 for player in Game:
     print(player.name + ' with a score of ' + str(player.score))
