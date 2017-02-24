@@ -1,15 +1,16 @@
 #!python
 from random import shuffle
+import random
 #begin with welcome message and initialize arrays
 
 class Player(object):
     def __init__(self, name, isai):
         self.name = name
         self.isAI = isai
-    score = 0
-    hand = [0,0,0,0,0,0,0,0,0,0,0,0,0] #each index is a card, 1 through 13
+        self.score = 0
+        self.hand = [0,0,0,0,0,0,0,0,0,0,0,0,0] #each index is a card, 1 through 13
+        self.isAI = False
     name = ''
-    isAI = False
     def makeBid(self, card):
         if card > 12:
             return -1
@@ -34,8 +35,13 @@ def shuffleSuit():
     
 def makeAIMove(player):
     if player.isAI:
+        moves = []
         #make a valid move
-        
+        for card in player.hand:
+            if card == 0:
+                moves.append(card)
+        #choose a move
+        return random.choice(moves)
     return -1
     
 #just 2 players for now
@@ -55,22 +61,22 @@ scoreCards = shuffleSuit()
 for card in scoreCards:
     playerNum = 0
     for player in Game:
+        print('\n\n')
         print(player.name)
         print('current available score card is ' + str(card) + '\n')
         print('your avalable cards are: ')
-        cardNum = 0
-        for hcard in player.hand:
-            if hcard == 0:
+        for cardNum in range(13):
+            if player.hand[cardNum] == 0:
                 print(cardNum + 1)
-            cardNum += 1
         if not player.isAI: move = input('select a card: ') - 1 #for simplicity, haha
-        else move = makeAIMove(player)
+        #else: move = makeAIMove(player)
         while player.makeBid(move) == -1:
             print('bad selection')
-            move = input('select a card: ') #for simplicity, haha
+            move = input('select a card: ')-1#for simplicity, haha
         #should have a valid move now
         Moves[playerNum] = move
         playerNum += 1
+        playerNum %= NUMPLAYERS
     print(max(Moves))
     Game[Moves.index(max(Moves))].winCard(card)
 for player in Game:
