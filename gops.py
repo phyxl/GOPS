@@ -32,6 +32,12 @@ def shuffleSuit():
     shuffle(suit)
     return suit
     
+def makeAIMove(player):
+    if player.isAI:
+        #make a valid move
+        
+    return -1
+    
 #just 2 players for now
 #whosTurn = 0
 NUMPLAYERS = 2
@@ -50,14 +56,15 @@ for card in scoreCards:
     playerNum = 0
     for player in Game:
         print(player.name)
-        print(' current available score card is ' + str(card) + '\n')
+        print('current available score card is ' + str(card) + '\n')
         print('your avalable cards are: ')
         cardNum = 0
         for hcard in player.hand:
             if hcard == 0:
                 print(cardNum + 1)
             cardNum += 1
-        move = input('select a card: ') - 1 #for simplicity, haha
+        if not player.isAI: move = input('select a card: ') - 1 #for simplicity, haha
+        else move = makeAIMove(player)
         while player.makeBid(move) == -1:
             print('bad selection')
             move = input('select a card: ') #for simplicity, haha
