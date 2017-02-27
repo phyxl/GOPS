@@ -1,16 +1,15 @@
 #!python
 from random import shuffle
-import random
 #begin with welcome message and initialize arrays
 
 class Player(object):
     def __init__(self, name, isai):
         self.name = name
         self.isAI = isai
-        self.score = 0
-        self.hand = [0,0,0,0,0,0,0,0,0,0,0,0,0] #each index is a card, 1 through 13
-
-    name = ''
+        score = 0
+        hand = [0,0,0,0,0,0,0,0,0,0,0,0,0] #each index is a card, 1 through 13
+        name = ''
+        isAI = False
     def makeBid(self, card):
         if card > 12:
             return -1
@@ -27,6 +26,9 @@ class Player(object):
     def winCard(self, scoreCard):
         self.score += scoreCard
     
+    def makeANNmove(self, scoreCard, game):
+        #Evaluate the ANN
+        ANNinput = 
 def shuffleSuit():
     #generate a list of numbers from 0 to 12
     suit = [1,2,3,4,5,6,7,8,9,10,11,12,13]
@@ -35,13 +37,8 @@ def shuffleSuit():
     
 def makeAIMove(player):
     if player.isAI:
-        moves = []
         #make a valid move
-        for card in range(13):
-            if player.hand[card] == 0:
-                moves.append(card)
-        #choose a move
-        return random.choice(moves)
+        
     return -1
     
 #just 2 players for now
@@ -51,7 +48,6 @@ NUMPLAYERS = 2
 Game = []
 for num in range(0,NUMPLAYERS):
     Game.append(Player('Player ' + str(num + 1), False))
-Game[1].isAI = True
 Moves = []
 for num in range(0, NUMPLAYERS):
     Moves.append(-1)
@@ -59,30 +55,27 @@ for num in range(0, NUMPLAYERS):
 scoreCards = shuffleSuit()
 
 
-for card in scoreCards:
+for card in scoreCards: # game loop
     playerNum = 0
     for player in Game:
-        print('\n\n')
         print(player.name)
-        print('current available score card is ' + str(card) + '\n')
-        print('your avalable cards are: ')
-        for cardNum in range(13):
-            if player.hand[cardNum] == 0:
-                print(cardNum + 1)
-        if not player.isAI: move = input('select a card: ') - 1 #for simplicity, haha
-        else: 
-            move = makeAIMove(player)
-            print('\nAI move is: ')
-            print(move+1)
+        if not player.isAI:
+            print('current available score card is ' + str(card) + '\n')
+            print('your avalable cards are: ')
+            cardNum = 0
+            for hcard in player.hand:
+                if hcard == 0:
+                    print(cardNum + 1)
+                cardNum += 1
+            move = input('select a card: ') - 1 #for simplicity, haha
+        else move = makeAIMove(player)
         while player.makeBid(move) == -1:
             print('bad selection')
-            move = input('select a card: ')-1#for simplicity, haha
+            move = input('select a card: ') #for simplicity, haha
         #should have a valid move now
         Moves[playerNum] = move
         playerNum += 1
-        playerNum %= NUMPLAYERS
-    print('\nWinning Bid: ')
-    print(max(Moves)+1)
+    print(max(Moves))
     Game[Moves.index(max(Moves))].winCard(card)
 for player in Game:
     print(player.name + ' with a score of ' + str(player.score))
